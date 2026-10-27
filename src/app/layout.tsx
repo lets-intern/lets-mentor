@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import "./globals.css";
 
+// Vercel에서는 프로젝트에 연결된 Production 도메인을 자동으로 쓴다
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  metadataBase: new URL(siteUrl),
   title: "멘토 모집",
   description: "취업준비생과 함께할 현직자 멘토를 모집합니다.",
 };
