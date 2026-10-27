@@ -15,7 +15,7 @@ export default function ApplyCompletePage() {
       <p className="mt-3 leading-relaxed text-zinc-600">
         지원해주셔서 감사합니다.
         <br />
-        신청 시 입력한 <strong>이름</strong>과 <strong>휴대폰 번호</strong>로 진행 현황을 확인할 수 있습니다.
+        신청 시 입력한 <strong>성함</strong>과 <strong>연락처</strong>로 진행 현황을 확인할 수 있습니다.
       </p>
       <div className="mt-8 flex gap-3">
         <Link href="/status" className="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700">

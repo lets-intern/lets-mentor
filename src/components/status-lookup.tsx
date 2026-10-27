@@ -47,11 +47,11 @@ export function StatusLookup() {
     <div className="space-y-8">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <label htmlFor="name" className="text-[15px] font-semibold">이름</label>
+          <label htmlFor="name" className="text-[15px] font-semibold">성함</label>
           <input id="name" name="name" required autoComplete="name" className={inputClass} />
         </div>
         <div className="space-y-2">
-          <label htmlFor="phone" className="text-[15px] font-semibold">휴대폰 번호</label>
+          <label htmlFor="phone" className="text-[15px] font-semibold">연락처</label>
           <input
             id="phone"
             name="phone"

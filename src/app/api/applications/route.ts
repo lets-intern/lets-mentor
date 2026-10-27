@@ -32,6 +32,7 @@ export async function POST(request: Request) {
     name: input.name,
     phone: input.phone,
     email: input.email,
+    preferred_contact_methods: input.preferredContactMethods,
     company: input.company,
     job_title: input.jobTitle,
     years_of_experience: input.yearsOfExperience,

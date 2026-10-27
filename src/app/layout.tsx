@@ -43,8 +43,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </header>
         <main className="flex flex-1 flex-col">{children}</main>
         <footer className="border-t border-zinc-100 py-8 text-center text-xs text-zinc-400">
-          {/* 임시 문구 — 회사명·문의 채널 확정 시 교체 */}
-          문의: contact@example.com
+          {/* 회사명 확정 시 추가 */}
+          문의:{" "}
+          <a href="mailto:official@letscareer.co.kr" className="hover:text-zinc-600 hover:underline">
+            official@letscareer.co.kr
+          </a>
         </footer>
       </body>
     </html>

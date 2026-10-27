@@ -23,6 +23,8 @@ export const MENTORING_TYPES = [
   "직무 Q&A",
 ] as const;
 
+export const CONTACT_METHODS = ["연락처", "이메일"] as const;
+
 export const STATUS_LABELS = {
   received: "접수 완료",
   reviewing: "검토중",
@@ -45,21 +47,22 @@ export function normalizeName(value: string) {
 const phone = z
   .string()
   .transform(normalizePhone)
-  .refine((v) => /^01[0-9]{8,9}$/.test(v), "휴대폰 번호를 정확히 입력해주세요.");
+  .refine((v) => /^01[0-9]{8,9}$/.test(v), "연락처를 정확히 입력해주세요.");
 
 const name = z
   .string()
   .transform(normalizeName)
-  .pipe(z.string().min(1, "이름을 입력해주세요.").max(50));
+  .pipe(z.string().min(1, "성함을 입력해주세요.").max(50));
 
 const requiredText = (label: string, max = 100) =>
   z.string().trim().min(1, `${label}을(를) 입력해주세요.`).max(max, `${max}자 이내로 입력해주세요.`);
 
+// 미입력은 빈 문자열로 저장 (컬럼이 not null)
+const optionalText = (max = 100) => z.string().trim().max(max, `${max}자 이내로 입력해주세요.`);
+
 export const applicationSchema = z.object({
   name,
-  phone,
-  email: z.string().trim().email("이메일 형식이 올바르지 않습니다."),
-  company: requiredText("재직 회사"),
+  company: requiredText("소속"),
   jobTitle: requiredText("직무"),
   // 빈 문자열은 coerce 시 0이 되므로 미입력으로 처리
   yearsOfExperience: z.preprocess(
@@ -70,10 +73,13 @@ export const applicationSchema = z.object({
       .min(0, "0 이상 입력해주세요.")
       .max(60, "60 이하로 입력해주세요."),
   ),
+  phone,
+  email: z.string().trim().email("이메일 형식이 올바르지 않습니다."),
+  preferredContactMethods: z.array(z.enum(CONTACT_METHODS)).min(1, "하나 이상 선택해주세요."),
   jobFields: z.array(z.enum(JOB_FIELDS)).min(1, "하나 이상 선택해주세요."),
   mentoringTypes: z.array(z.enum(MENTORING_TYPES)).min(1, "하나 이상 선택해주세요."),
-  introduction: requiredText("자기소개", TEXT_MAX),
-  motivation: requiredText("지원 동기", TEXT_MAX),
+  introduction: optionalText(TEXT_MAX),
+  motivation: optionalText(TEXT_MAX),
   attachmentPath: z
     .string()
     .regex(/^resumes\/[0-9a-f-]{36}\.pdf$/, "첨부파일 정보가 올바르지 않습니다.")

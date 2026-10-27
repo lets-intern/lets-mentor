@@ -20,16 +20,17 @@
 
 | 구분 | 항목 | 형식 | 필수 |
 | --- | --- | --- | --- |
-| 기본 | 이름 | text | O |
-| 기본 | 전화번호 | tel (숫자만 저장, `01012345678`) | O |
-| 기본 | 이메일 | email | O |
-| 기본 | 현 재직 회사 | text | O |
+| 기본 | 성함 | text | O |
+| 기본 | 소속 | text | O |
 | 기본 | 직무 | text | O |
 | 기본 | 연차 | number | O |
+| 기본 | 연락처 | tel (숫자만 저장, `01012345678`) | O |
+| 기본 | 이메일 | email | O |
+| 기본 | 선호 연락 수단 | checkbox 복수 선택 (연락처 / 이메일) | O |
 | 분야 | 멘토링 가능 직무 분야 | 복수 선택 | O |
 | 분야 | 가능한 멘토링 형태 | 복수 선택 (서류 첨삭 / 모의 면접 / 커리어 상담 / 직무 Q&A) | O |
-| 서술 | 자기소개 | textarea (최대 1,000자) | O |
-| 서술 | 지원 동기 | textarea (최대 1,000자) | O |
+| 서술 | 이력 소개 | textarea (최대 1,000자) | X |
+| 서술 | 전하고 싶은 말씀 | textarea (최대 1,000자) | X |
 | 첨부 | 이력서/포트폴리오 | PDF, 최대 10MB, 1개 | X |
 | 첨부 | 링크 | URL 최대 3개 (LinkedIn, 포트폴리오 등) | X |
 | 동의 | 개인정보 수집·이용 동의 | checkbox | O |
@@ -52,6 +53,7 @@ create table mentor_applications (
   name               text not null,
   phone              text not null unique,   -- 숫자만, 중복 신청 차단 기준
   email              text not null,
+  preferred_contact_methods text[] not null default '{}',  -- 연락처 / 이메일 (20261027200000 마이그레이션)
   company            text not null,
   job_title          text not null,
   years_of_experience int  not null check (years_of_experience >= 0),

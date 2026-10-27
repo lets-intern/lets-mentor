@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type ReactNode } from "react";
 import {
+  CONTACT_METHODS,
   JOB_FIELDS,
   MAX_ATTACHMENT_BYTES,
   MENTORING_TYPES,
@@ -68,6 +69,7 @@ export function ApplyForm() {
       name: String(fd.get("name") ?? ""),
       phone: String(fd.get("phone") ?? ""),
       email: String(fd.get("email") ?? ""),
+      preferredContactMethods: fd.getAll("preferredContactMethods").map(String),
       company: String(fd.get("company") ?? ""),
       jobTitle: String(fd.get("jobTitle") ?? ""),
       yearsOfExperience: String(fd.get("yearsOfExperience") ?? ""),
@@ -132,27 +134,10 @@ export function ApplyForm() {
     <form onSubmit={handleSubmit} noValidate className="space-y-12">
       <Fieldset title="기본 정보">
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field name="name" label="이름" required error={errors.name}>
+          <Field name="name" label="성함" required error={errors.name}>
             <input id="name" name="name" autoComplete="name" className={inputClass} aria-invalid={!!errors.name} />
           </Field>
-          <Field name="phone" label="휴대폰 번호" required error={errors.phone} hint="신청 현황 조회에 사용됩니다.">
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              inputMode="numeric"
-              autoComplete="tel"
-              placeholder="010-0000-0000"
-              value={phone}
-              onChange={(e) => setPhone(formatPhone(e.target.value))}
-              className={inputClass}
-              aria-invalid={!!errors.phone}
-            />
-          </Field>
-          <Field name="email" label="이메일" required error={errors.email}>
-            <input id="email" name="email" type="email" autoComplete="email" className={inputClass} aria-invalid={!!errors.email} />
-          </Field>
-          <Field name="company" label="현 재직 회사" required error={errors.company}>
+          <Field name="company" label="소속" required error={errors.company}>
             <input id="company" name="company" autoComplete="organization" className={inputClass} aria-invalid={!!errors.company} />
           </Field>
           <Field name="jobTitle" label="직무" required error={errors.jobTitle}>
@@ -173,6 +158,33 @@ export function ApplyForm() {
               <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-zinc-500">년</span>
             </div>
           </Field>
+          <Field name="phone" label="연락처" required error={errors.phone}>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
+              placeholder="010-0000-0000"
+              value={phone}
+              onChange={(e) => setPhone(formatPhone(e.target.value))}
+              className={inputClass}
+              aria-invalid={!!errors.phone}
+            />
+          </Field>
+          <Field name="email" label="이메일" required error={errors.email}>
+            <input id="email" name="email" type="email" autoComplete="email" className={inputClass} aria-invalid={!!errors.email} />
+          </Field>
+          <Field
+            name="preferredContactMethods"
+            label="선호 연락 수단"
+            required
+            error={errors.preferredContactMethods}
+            hint="복수 선택 가능"
+            className="sm:col-span-2"
+          >
+            <ChipGroup name="preferredContactMethods" options={CONTACT_METHODS} />
+          </Field>
         </div>
       </Fieldset>
 
@@ -185,26 +197,29 @@ export function ApplyForm() {
         </Field>
       </Fieldset>
 
-      <Fieldset title="자기소개">
-        <Field name="introduction" label="자기소개" required error={errors.introduction} counter={`${introLen}/${TEXT_MAX}`}>
+      <Fieldset
+        title="추가 정보 (선택)"
+        description="멘토님께 맞는 활동을 제안드릴 때 참고할게요. 편하게 적어주세요."
+      >
+        <Field name="introduction" label="이력 소개" error={errors.introduction} counter={`${introLen}/${TEXT_MAX}`}>
           <textarea
             id="introduction"
             name="introduction"
             rows={6}
             maxLength={TEXT_MAX}
-            placeholder="경력과 강점을 소개해주세요."
+            placeholder="멘토님의 이력을 간단하게 소개해주세요."
             onChange={(e) => setIntroLen(e.target.value.length)}
             className={inputClass}
             aria-invalid={!!errors.introduction}
           />
         </Field>
-        <Field name="motivation" label="지원 동기" required error={errors.motivation} counter={`${motivationLen}/${TEXT_MAX}`}>
+        <Field name="motivation" label="전하고 싶은 말씀" error={errors.motivation} counter={`${motivationLen}/${TEXT_MAX}`}>
           <textarea
             id="motivation"
             name="motivation"
             rows={6}
             maxLength={TEXT_MAX}
-            placeholder="멘토로 지원하는 이유를 알려주세요."
+            placeholder="렛츠커리어에 대해 궁금하신 점, 함께해보고 싶은 활동 등 편하게 이야기해주세요."
             onChange={(e) => setMotivationLen(e.target.value.length)}
             className={inputClass}
             aria-invalid={!!errors.motivation}
@@ -235,7 +250,7 @@ export function ApplyForm() {
         <div data-field="privacyAgreed" className="space-y-3">
           {/* 임시 문구 — 법무 검토된 문구로 교체 (docs/DESIGN.md §8) */}
           <div className="rounded-lg bg-zinc-50 p-4 text-sm leading-relaxed text-zinc-600">
-            <p>· 수집 항목: 이름, 휴대폰 번호, 이메일, 재직 회사, 직무, 연차, 자기소개, 지원 동기, 첨부파일·링크</p>
+            <p>· 수집 항목: 성함, 소속, 직무, 연차, 연락처, 이메일, 이력 소개, 전하고 싶은 말씀, 첨부파일·링크</p>
             <p>· 수집 목적: 멘토 선발 및 선발 결과 안내</p>
             <p>· 보유 기간: 모집 종료 후 1년 (요청 시 즉시 파기)</p>
             <p className="mt-2 text-zinc-500">동의를 거부할 수 있으나, 거부 시 멘토 신청이 제한됩니다.</p>
@@ -269,10 +284,13 @@ export function ApplyForm() {
   );
 }
 
-function Fieldset({ title, children }: { title: string; children: ReactNode }) {
+function Fieldset({ title, description, children }: { title: string; description?: string; children: ReactNode }) {
   return (
     <fieldset className="space-y-5">
-      <legend className="mb-5 w-full border-b border-zinc-200 pb-3 text-lg font-bold">{title}</legend>
+      <legend className="mb-5 w-full border-b border-zinc-200 pb-3 text-lg font-bold">
+        {title}
+        {description && <span className="mt-1.5 block text-[15px] font-normal text-zinc-600">{description}</span>}
+      </legend>
       {children}
     </fieldset>
   );
@@ -285,6 +303,7 @@ function Field({
   hint,
   counter,
   error,
+  className,
   children,
 }: {
   name: string;
@@ -293,10 +312,11 @@ function Field({
   hint?: string;
   counter?: string;
   error?: string;
+  className?: string;
   children: ReactNode;
 }) {
   return (
-    <div data-field={name} className="space-y-2">
+    <div data-field={name} className={`space-y-2 ${className ?? ""}`}>
       <div className="flex items-baseline justify-between gap-2">
         <label htmlFor={name} className="text-[15px] font-semibold">
           {label}

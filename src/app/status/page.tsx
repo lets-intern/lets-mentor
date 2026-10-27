@@ -7,7 +7,7 @@ export default function StatusPage() {
   return (
     <div className="mx-auto w-full max-w-md px-4 py-12 sm:py-16">
       <h1 className="text-3xl font-bold tracking-tight">신청 현황 조회</h1>
-      <p className="mt-2 text-zinc-600">신청 시 입력한 이름과 휴대폰 번호를 입력해주세요.</p>
+      <p className="mt-2 text-zinc-600">신청 시 입력한 성함과 연락처를 입력해주세요.</p>
       <div className="mt-10">
         <StatusLookup />
       </div>

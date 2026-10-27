@@ -1,7 +1,7 @@
 import { STATUS_LABELS, statusLookupSchema, type ApplicationStatus } from "@/lib/application";
 import { createServerSupabase } from "@/lib/supabase-server";
 
-const NOT_FOUND = "일치하는 신청 내역이 없습니다. 이름과 전화번호를 다시 확인해주세요.";
+const NOT_FOUND = "일치하는 신청 내역이 없습니다. 성함과 연락처를 다시 확인해주세요.";
 
 // 이름+전화번호가 모두 일치할 때만 상태와 신청일을 반환.
 // 어느 쪽이 틀렸는지는 구분하지 않는다.
