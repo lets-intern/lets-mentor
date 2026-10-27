@@ -1,0 +1,117 @@
+"use client";
+
+import { useState } from "react";
+import type { ApplicationStatus } from "@/lib/application";
+
+const STEPS: { key: ApplicationStatus; label: string }[] = [
+  { key: "received", label: "접수 완료" },
+  { key: "reviewing", label: "검토중" },
+  { key: "replied", label: "회신완료" },
+];
+
+const inputClass =
+  "w-full rounded-lg border border-zinc-300 bg-white px-3.5 py-2.5 text-[15px] outline-none placeholder:text-zinc-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-100";
+
+type Result = { status: ApplicationStatus; statusLabel: string; createdAt: string };
+
+export function StatusLookup() {
+  const [result, setResult] = useState<Result | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    setLoading(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch("/api/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: fd.get("name"), phone: fd.get("phone") }),
+      });
+      const data = await res.json();
+      if (res.ok) setResult(data);
+      else setError(data.error);
+    } catch {
+      setError("조회 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const currentIndex = result ? STEPS.findIndex((s) => s.key === result.status) : -1;
+
+  return (
+    <div className="space-y-8">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-2">
+          <label htmlFor="name" className="text-[15px] font-semibold">이름</label>
+          <input id="name" name="name" required autoComplete="name" className={inputClass} />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="phone" className="text-[15px] font-semibold">휴대폰 번호</label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            inputMode="numeric"
+            required
+            autoComplete="tel"
+            placeholder="010-0000-0000"
+            className={inputClass}
+          />
+        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-lg bg-brand-600 py-3.5 font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+        >
+          {loading ? "조회 중…" : "조회하기"}
+        </button>
+      </form>
+
+      {error && (
+        <p role="alert" className="rounded-lg bg-zinc-50 px-4 py-4 text-center text-sm text-zinc-600">
+          {error}
+        </p>
+      )}
+
+      {result && (
+        <div className="rounded-xl border border-zinc-200 p-6" aria-live="polite">
+          <p className="text-sm text-zinc-500">
+            신청일 {new Date(result.createdAt).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" })}
+          </p>
+          <p className="mt-1 text-xl font-bold">
+            현재 상태: <span className="text-brand-600">{result.statusLabel}</span>
+          </p>
+          <ol className="mt-6 flex items-center">
+            {STEPS.map((step, i) => {
+              const done = i <= currentIndex;
+              return (
+                <li key={step.key} className="flex flex-1 items-center last:flex-none">
+                  <div className="flex flex-col items-center gap-2">
+                    <span
+                      className={`flex size-8 items-center justify-center rounded-full text-sm font-bold ${
+                        done ? "bg-brand-600 text-white" : "bg-zinc-100 text-zinc-400"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className={`whitespace-nowrap text-xs ${done ? "font-semibold text-zinc-900" : "text-zinc-400"}`}>
+                      {step.label}
+                    </span>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className={`mx-2 mb-6 h-0.5 flex-1 ${i < currentIndex ? "bg-brand-600" : "bg-zinc-200"}`} />
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      )}
+    </div>
+  );
+}
