@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { HeaderActions } from "@/components/header-actions";
 import "./globals.css";
 
 // Vercel에서는 프로젝트에 연결된 Production 도메인을 자동으로 쓴다
@@ -28,17 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/" className="font-bold tracking-tight">
               멘토 모집
             </Link>
-            <div className="flex items-center gap-1 text-sm">
-              <Link href="/status" className="rounded-md px-3 py-2 text-zinc-600 hover:bg-zinc-100">
-                신청 현황 조회
-              </Link>
-              <Link
-                href="/apply"
-                className="rounded-md bg-brand-600 px-3 py-2 font-semibold text-white hover:bg-brand-700"
-              >
-                신청하기
-              </Link>
-            </div>
+            <HeaderActions />
           </nav>
         </header>
         <main className="flex flex-1 flex-col">{children}</main>
