@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ApplyForm } from "@/components/apply-form";
 
-export const metadata: Metadata = { title: "멘토 신청 | 멘토 모집" };
+export const metadata: Metadata = { title: "렛츠커리어 | 인턴/신입, 커리어의 첫 걸음을 함께 해요" };
 
 export default function ApplyPage() {
   return (

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { StatusLookup } from "@/components/status-lookup";
 
-export const metadata: Metadata = { title: "신청 현황 조회 | 멘토 모집" };
+export const metadata: Metadata = { title: "렛츠커리어 | 인턴/신입, 커리어의 첫 걸음을 함께 해요" };
 
 export default function StatusPage() {
   return (

@@ -11,7 +11,7 @@ const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "멘토 모집",
+  title: "렛츠커리어 | 함께 성장하는 커리어 멘토",
   description: "취업준비생과 함께할 현직자 멘토를 모집합니다.",
 };
 
