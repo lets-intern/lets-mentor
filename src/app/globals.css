@@ -2,11 +2,11 @@
 
 @theme {
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-  --color-brand-50: #f0efff;
-  --color-brand-100: #e1dfff;
-  --color-brand-500: #8a84ff;
-  --color-brand-600: #6b63ff;
-  --color-brand-700: #5249e6;
+  --color-brand-50: #eef0ff;
+  --color-brand-100: #dfe1fe;
+  --color-brand-500: #6f76f7;
+  --color-brand-600: #4d55f5;
+  --color-brand-700: #3a41d6;
 }
 
 body {
