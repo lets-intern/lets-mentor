@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { HeaderActions } from "@/components/header-actions";
 import "./globals.css";
@@ -25,9 +26,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="flex min-h-full flex-col font-sans">
         <header className="sticky top-0 z-10 border-b border-zinc-100 bg-white/90 backdrop-blur">
-          <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
-            <Link href="/" className="font-bold tracking-tight">
-              멘토 모집
+          <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
+            <Link href="/" className="flex min-w-0 items-center">
+              {/* 좁은 화면에서는 우측 버튼 자리를 남기고 비율대로 줄어든다 (최대 높이 24px) */}
+              <Image
+                src="/logo.svg"
+                alt="렛츠커리어"
+                width={234}
+                height={26}
+                priority
+                unoptimized
+                className="h-auto w-full max-w-[216px]"
+              />
             </Link>
             <HeaderActions />
           </nav>
