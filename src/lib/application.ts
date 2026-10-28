@@ -23,7 +23,7 @@ export const MENTORING_TYPES = [
   "직무 Q&A",
 ] as const;
 
-export const CONTACT_METHODS = ["연락처", "이메일"] as const;
+export const CONTACT_METHODS = ["전화번호", "이메일"] as const;
 
 export const STATUS_LABELS = {
   received: "접수 완료",
@@ -35,6 +35,7 @@ export type ApplicationStatus = keyof typeof STATUS_LABELS;
 
 export const MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024;
 export const TEXT_MAX = 1000;
+export const MAX_LINKS = 3;
 
 export function normalizePhone(value: string) {
   return value.replace(/\D/g, "");
@@ -47,7 +48,7 @@ export function normalizeName(value: string) {
 const phone = z
   .string()
   .transform(normalizePhone)
-  .refine((v) => /^01[0-9]{8,9}$/.test(v), "연락처를 정확히 입력해주세요.");
+  .refine((v) => /^01[0-9]{8,9}$/.test(v), "전화번호를 정확히 입력해주세요.");
 
 const name = z
   .string()
@@ -84,9 +85,9 @@ export const applicationSchema = z.object({
     .string()
     .regex(/^resumes\/[0-9a-f-]{36}\.pdf$/, "첨부파일 정보가 올바르지 않습니다.")
     .nullable(),
-  links: z
+  snsLinks: z
     .array(z.string().trim().url("올바른 URL을 입력해주세요. (https://로 시작)"))
-    .max(3, "링크는 최대 3개까지 입력할 수 있습니다."),
+    .max(MAX_LINKS, `링크는 최대 ${MAX_LINKS}개까지 입력할 수 있습니다.`),
   privacyAgreed: z.literal(true, { message: "개인정보 수집·이용에 동의해주세요." }),
 });
 

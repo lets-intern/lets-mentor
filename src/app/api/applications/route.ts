@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     introduction: input.introduction,
     motivation: input.motivation,
     attachment_path: input.attachmentPath,
-    links: input.links,
+    sns_links: input.snsLinks,
     privacy_agreed_at: new Date().toISOString(),
   });
 

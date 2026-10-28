@@ -7,6 +7,7 @@ import {
   CONTACT_METHODS,
   JOB_FIELDS,
   MAX_ATTACHMENT_BYTES,
+  MAX_LINKS,
   MENTORING_TYPES,
   TEXT_MAX,
   applicationSchema,
@@ -78,7 +79,7 @@ export function ApplyForm() {
       introduction: String(fd.get("introduction") ?? ""),
       motivation: String(fd.get("motivation") ?? ""),
       attachmentPath: null as string | null,
-      links: fd.getAll("links").map(String).map((s) => s.trim()).filter(Boolean),
+      snsLinks: fd.getAll("snsLinks").map(String).map((s) => s.trim()).filter(Boolean),
       privacyAgreed: fd.get("privacyAgreed") === "on",
     };
 
@@ -158,7 +159,7 @@ export function ApplyForm() {
               <span className="pointer-events-none absolute inset-y-0 right-3.5 flex items-center text-sm text-zinc-500">년</span>
             </div>
           </Field>
-          <Field name="phone" label="연락처" required error={errors.phone}>
+          <Field name="phone" label="전화번호" required error={errors.phone}>
             <input
               id="phone"
               name="phone"
@@ -189,7 +190,7 @@ export function ApplyForm() {
       </Fieldset>
 
       <Fieldset title="멘토링 분야">
-        <Field name="jobFields" label="멘토링 가능 직무 분야" required error={errors.jobFields} hint="복수 선택 가능">
+        <Field name="jobFields" label="멘토링 가능 분야" required error={errors.jobFields} hint="복수 선택 가능">
           <ChipGroup name="jobFields" options={JOB_FIELDS} />
         </Field>
         <Field name="mentoringTypes" label="가능한 멘토링 형태" required error={errors.mentoringTypes} hint="복수 선택 가능">
@@ -237,10 +238,10 @@ export function ApplyForm() {
             className="block w-full text-sm text-zinc-600 file:mr-4 file:rounded-md file:border-0 file:bg-zinc-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-zinc-700 hover:file:bg-zinc-200"
           />
         </Field>
-        <Field name="links" label="링크" error={errors.links} hint="LinkedIn, 포트폴리오 등 최대 3개">
+        <Field name="snsLinks" label="SNS" error={errors.snsLinks} hint={`LinkedIn, 인스타그램, 블로그 등 최대 ${MAX_LINKS}개`}>
           <div className="space-y-2">
-            {[0, 1, 2].map((i) => (
-              <input key={i} name="links" type="url" placeholder="https://" className={inputClass} aria-label={`링크 ${i + 1}`} />
+            {Array.from({ length: MAX_LINKS }, (_, i) => (
+              <input key={i} name="snsLinks" type="url" placeholder="https://" className={inputClass} aria-label={`SNS ${i + 1}`} />
             ))}
           </div>
         </Field>
@@ -250,7 +251,7 @@ export function ApplyForm() {
         <div data-field="privacyAgreed" className="space-y-3">
           {/* 임시 문구 — 법무 검토된 문구로 교체 (docs/DESIGN.md §8) */}
           <div className="rounded-lg bg-zinc-50 p-4 text-sm leading-relaxed text-zinc-600">
-            <p>· 수집 항목: 성함, 소속, 직무, 연차, 연락처, 이메일, 이력 소개, 전하고 싶은 말씀, 첨부파일·링크</p>
+            <p>· 수집 항목: 성함, 소속, 직무, 연차, 전화번호, 이메일, 이력 소개, 전하고 싶은 말씀, 첨부파일·링크</p>
             <p>· 수집 목적: 멘토 선발 및 선발 결과 안내</p>
             <p>· 보유 기간: 모집 종료 후 1년 (요청 시 즉시 파기)</p>
             <p className="mt-2 text-zinc-500">동의를 거부할 수 있으나, 거부 시 멘토 신청이 제한됩니다.</p>
