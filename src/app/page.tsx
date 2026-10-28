@@ -1,8 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
+import { ChallengeShowcase } from "@/components/challenge-showcase";
+import { ProgramScroller } from "@/components/program-scroller";
 import { Faq } from "@/components/faq";
-import { KAKAO_CHAT_URL } from "@/lib/links";
+import {
+  featuredSeminarPreview,
+  getChallengeHighlights,
+  getMentoringHighlights,
+  getSeminarHighlights,
+  getVodHighlights,
+} from "@/lib/programs";
+import {
+  KAKAO_CHAT_URL,
+  LETSCAREER_MENTORING_URL,
+  LETSCAREER_SEMINAR_URL,
+  LETSCAREER_VOD_URL,
+} from "@/lib/links";
 
 // 아래로 갈수록 진해지는 말풍선. 마지막 흰 말풍선이 캐릭터의 대답
 const MOTIVATIONS = [
@@ -51,6 +65,39 @@ const VALUES = [
   },
 ];
 
+// 시안 수치 그대로. 실적이 바뀌면 함께 갱신
+const STATS = [
+  { label: "누적 참여자 수", value: "20,000+", unit: "명" },
+  { label: "누적 프로그램 수", value: "400+", unit: "개" },
+  { label: "누적 후기 개수", value: "7,200+", unit: "개" },
+  { label: "인스타그램 팔로워 수", value: "5.6", unit: "M" },
+  { label: "커뮤니티 참여자 수", value: "7,000+", unit: "명" },
+];
+
+// 문구는 초안 — 활동별 운영 방식이 정해지면 검토
+const MISSIONS = [
+  {
+    title: "챌린지 서면/LIVE 피드백",
+    description: "렛츠커리어 챌린지에 참여하며 수행한 자료를 바탕으로, 서면 혹은 실시간 온라인으로 피드백해요.",
+  },
+  {
+    title: "무료&유료 세미나",
+    link: { href: LETSCAREER_SEMINAR_URL, label: "무료 세미나관" },
+    description:
+      "매월 2회 이상 열리는 LIVE 세미나에서 기업·직무 실무 이야기와 합격 전략을 전하고\n실시간 Q&A로 취업 준비생의 고민에 직접 답해요.",
+  },
+  {
+    title: "취업 노하우 VOD",
+    link: { href: LETSCAREER_VOD_URL, label: "렛츠 VOD" },
+    description: "한 번 녹화한 강의로 시간과 장소에 구애받지 않고 노하우를 전해요.",
+  },
+  {
+    title: "1:1 LIVE 멘토링",
+    link: { href: LETSCAREER_MENTORING_URL, label: "1:1 멘토링관" },
+    description: "취업 준비생과 실시간 온라인으로 만나, 커리어 고민을 깊이 있게 나눠요.",
+  },
+];
+
 const CONCERNS = [
   {
     title: "현직자 멘토 활동, 관심은 있는데 내가 무얼 할 수 있는지 잘 모르겠어요",
@@ -62,13 +109,6 @@ const CONCERNS = [
   {
     title: "업무 일정과 개인 일정은 꼭! 보장받고 싶어요",
     details: ["업무 일정과 개인 일정이 유동적이라 걱정이에요", "오프라인 멘토링은 참여하기 어렵고 부담스러워요"],
-  },
-  {
-    title: "멘토링만 하면 되는 줄 알았는데...이것 저것 복잡하고 헷갈려요",
-    details: [
-      "합류 프로세스, 활동 심사, 중간 평가 등 내부 절차가 많아요",
-      "기업 보고용 멘토링 일지 작성까지 과정이 복잡해요",
-    ],
   },
   {
     title: "개인정보가 노출될 수 있다는 점이 부담스러워요",
@@ -126,6 +166,166 @@ function ValueIcon({ tilt = false }: { tilt?: boolean }) {
       <circle cx="32" cy="32" r="17.5" fill="#4d55f5" fillOpacity="0.44" />
       <path d="M32 0.5A31.5 31.5 0 0 1 63.5 32H32Z" fill="url(#value-icon-shine)" />
     </svg>
+  );
+}
+
+// 최신 기수 챌린지를 받아 와 직무별 목록으로 보여준다
+async function ChallengeList() {
+  return <ChallengeShowcase challenges={await getChallengeHighlights()} />;
+}
+
+// 대표 3분 미리보기 + 마감된 최근 LIVE 세미나
+async function SeminarList() {
+  return (
+    <ProgramScroller
+      items={[featuredSeminarPreview, ...(await getSeminarHighlights())]}
+      more={{ href: LETSCAREER_SEMINAR_URL, label: "무료 세미나 페이지 보기" }}
+    />
+  );
+}
+
+// 최근 등록된 렛츠커리어 VOD
+async function VodList() {
+  return (
+    <ProgramScroller items={await getVodHighlights()} more={{ href: LETSCAREER_VOD_URL, label: "VOD 전체 보기" }} />
+  );
+}
+
+// 1:1 LIVE 멘토링을 열어 둔 멘토
+async function MentoringList() {
+  return (
+    <ProgramScroller
+      items={await getMentoringHighlights()}
+      more={{ href: LETSCAREER_MENTORING_URL, label: "1:1 멘토링 전체 보기" }}
+    />
+  );
+}
+
+// Painpoint(회색) ↔ Solution(파랑) 한 쌍
+function AdvantageRow({
+  pain,
+  solution,
+  painScene,
+  solutionScene,
+}: {
+  pain: string;
+  solution: string;
+  painScene: ReactNode;
+  solutionScene: ReactNode;
+}) {
+  return (
+    <li className="grid gap-8 sm:gap-3 md:grid-cols-2">
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <div>
+          <p className="rounded-t-xl bg-[#d8d8d8] p-2.5 text-center text-lg leading-[1.4] font-semibold text-neut-40 sm:text-xl">
+            Painpoint
+          </p>
+          <div className="relative flex h-[302px] items-center justify-center overflow-hidden rounded-b-xl bg-[#e7e7e7] px-5">
+            {painScene}
+          </div>
+        </div>
+        <p className="text-center text-lg leading-[1.4] font-semibold text-black sm:text-[22px]">{pain}</p>
+      </div>
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <div>
+          <p className="rounded-t-xl bg-linear-to-r from-[#4a76ff] to-[#5aafff] p-2.5 text-center text-lg leading-[1.4] font-semibold text-white sm:text-xl">
+            Solution
+          </p>
+          <div className="relative flex h-[302px] items-center justify-center overflow-hidden rounded-b-xl bg-[#e1ecff] px-5">
+            {solutionScene}
+          </div>
+        </div>
+        <p className="flex items-start justify-center gap-1.5 text-center text-lg leading-[1.4] font-semibold text-black sm:text-[22px]">
+          <CheckIcon className="mt-1.5 w-4 shrink-0 text-brand-600 sm:mt-2" />
+          {solution}
+        </p>
+      </div>
+    </li>
+  );
+}
+
+// 말풍선. tail 방향에 꼬리를 단다
+function ChatBubble({
+  tone,
+  tail,
+  children,
+}: {
+  tone: "dark" | "blue";
+  tail?: "left" | "right";
+  children: ReactNode;
+}) {
+  const bg = tone === "dark" ? "bg-[#3a3a43]" : "bg-brand-600";
+  return (
+    <p
+      className={`relative rounded-xl px-6 py-4 text-[15px] leading-normal font-medium text-white sm:px-8 sm:py-5 sm:text-lg ${bg}`}
+    >
+      {children}
+      {tail && (
+        <span
+          aria-hidden
+          className={`absolute -bottom-4 h-6 w-[22px] ${bg} ${
+            tail === "left"
+              ? "left-8 [clip-path:polygon(0_0,100%_0,0_100%)]"
+              : "right-8 [clip-path:polygon(0_0,100%_0,100%_100%)]"
+          }`}
+        />
+      )}
+    </p>
+  );
+}
+
+function CheckIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 14 12" className={className}>
+      <path
+        d="M2 6.5 5.5 10 12 2"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// 좁은 화면에서는 아래를 향한다
+function ProcessArrow() {
+  return (
+    <li aria-hidden className="flex shrink-0 rotate-90 lg:rotate-0">
+      <Image src="/process-arrow.svg" alt="" width={27} height={40} unoptimized className="h-8 w-auto lg:h-10" />
+    </li>
+  );
+}
+
+function ProcessStep({
+  n,
+  label,
+  light = false,
+  className = "",
+}: {
+  n: number;
+  label: string;
+  light?: boolean;
+  className?: string;
+}) {
+  return (
+    <li
+      className={`flex w-full items-center gap-3 rounded-lg py-3.5 pr-6 pl-5 sm:py-4 sm:pl-6 lg:w-auto ${
+        light ? "bg-[#dbddfd] text-[#5c5f66] lg:pr-9" : "bg-[#7177f7] text-white lg:pr-8"
+      } ${className}`}
+    >
+      <span
+        className={`flex size-6 shrink-0 items-center justify-center rounded-full text-base leading-[1.25] font-semibold ${
+          light ? "bg-brand-600/30 text-brand-600" : "bg-white/28"
+        }`}
+      >
+        {n}
+      </span>
+      <span className="text-[17px] leading-[1.5] font-semibold sm:text-xl lg:text-[22px] lg:whitespace-nowrap">
+        {label}
+      </span>
+    </li>
   );
 }
 
@@ -247,8 +447,8 @@ export default function Home() {
         <SectionHeading
           dark
           label="현직자 멘토 활동의 어려움"
-          title={["그러나 멘토 활동을 고민하게 만드는", "4가지 걸림돌이 있어요"]}
-          description={["많은 멘토님들이 아래 4가지 문제에 대해", "고민하고 계신다는 점에 동감했어요."]}
+          title={["그러나 멘토 활동을 고민하게 만드는", "3가지 걸림돌이 있어요"]}
+          description={["많은 멘토님들이 아래 3가지 문제에 대해", "고민하고 계신다는 점에 동감했어요."]}
         />
 
         <ol className="flex w-full max-w-[760px] flex-col gap-14 sm:gap-20">
@@ -281,6 +481,121 @@ export default function Home() {
               </ul>
             </li>
           ))}
+        </ol>
+      </section>
+
+      <section className="flex flex-col items-center gap-12 bg-white px-4 py-20 sm:gap-20 sm:px-8 sm:py-[120px]">
+        <SectionHeading
+          label="렛츠커리어의 장점"
+          title={["망설이게 하는 문제들,", "렛츠커리어가 해소해 드릴게요"]}
+          description={["관심을 넘어 실행으로 이어질 수 있도록", "렛츠커리어가 도울게요."]}
+          descriptionClassName="text-[#4c4f56]"
+        />
+        <ol className="flex w-full max-w-[1000px] flex-col gap-12 sm:gap-[60px]">
+          <AdvantageRow
+            pain="어떤 지식을 어떻게 공유해야 할지 고민"
+            solution="렛츠커리어가 적합한 멘토링 활동 및 지식 추천"
+            painScene={
+              <div className="flex w-full max-w-[398px] flex-col gap-3">
+                <ChatBubble tone="dark">
+                  현직자 멘토 활동, 관심은 있는데...
+                  <br />
+                  제가 어떤 내용을 전달할 수 있을까요?? 🤔
+                </ChatBubble>
+                <ChatBubble tone="dark" tail="left">
+                  그 내용을 어떻게 전달해야 할지도 잘 모르겠네요
+                </ChatBubble>
+              </div>
+            }
+            solutionScene={
+              <>
+                <div className="absolute top-9 left-5 h-[284px] w-[60%] max-w-[270px] bg-white px-5 py-6 text-[15px] leading-[1.8] font-medium text-black sm:text-base">
+                  [김렛커 경력기술서]
+                  <br />
+                  총 경력 2년 2개월
+                  <br />
+                  00기업 서비스
+                  <br />
+                  00은행 서비스
+                </div>
+                <div className="absolute right-4 bottom-10 sm:right-8">
+                  <ChatBubble tone="blue" tail="right">
+                    멘토님, 보내주신 이력을 토대로
+                    <br />- 자기소개서 챌린지
+                    <br />- 포트폴리오 챌린지
+                    <br />
+                    멘토링을 추천드려요👏
+                  </ChatBubble>
+                </div>
+              </>
+            }
+          />
+          <AdvantageRow
+            pain="보장받기 어려운 업무 및 개인 일정"
+            solution="온·오프라인, 시간 등 원하는 조건에 맞춰 활동 가능"
+            painScene={
+              // 시안처럼 위에서 20px 내려 놓고 아래쪽은 카드 밖으로 잘리게 둔다
+              <Image
+                src="/advantage-schedule.svg"
+                alt="빼곡하게 찬 업무·개인 일정표"
+                width={564}
+                height={573}
+                unoptimized
+                className="absolute top-5 left-1/2 h-auto w-[398px] max-w-[calc(100%-40px)] -translate-x-1/2"
+              />
+            }
+            solutionScene={
+              <div className="flex w-full flex-col gap-4">
+                <div className="self-start">
+                  <ChatBubble tone="dark" tail="left">
+                    <span className="flex flex-col gap-2">
+                      {["이번 6월 동안은 온라인만 가능해요.", "월, 수요일 19시 30분~22시 가능해요."].map((line) => (
+                        <span key={line} className="flex items-center gap-3">
+                          <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-[#bec1ff]">
+                            <CheckIcon className="w-2.5 text-brand-600" />
+                          </span>
+                          {line}
+                        </span>
+                      ))}
+                    </span>
+                  </ChatBubble>
+                </div>
+                <div className="self-end">
+                  <ChatBubble tone="blue" tail="right">
+                    네, 확인했습니다!
+                    <br />
+                    말씀주신 일정에 맞춰 멘토링
+                    <br />
+                    배정해드릴게요.
+                  </ChatBubble>
+                </div>
+              </div>
+            }
+          />
+          <AdvantageRow
+            pain="성함, 얼굴, 재직 기업 등에 대한 개인정보 노출"
+            solution="닉네임 활동, 계열사 등의 표현으로 정보 노출 최소화"
+            painScene={
+              <Image
+                src="/advantage-privacy-before.svg"
+                alt="이름·얼굴·재직 기업이 그대로 드러난 멘토 프로필"
+                width={391}
+                height={290}
+                unoptimized
+                className="absolute top-4 left-1/2 h-auto w-[391px] max-w-[calc(100%-40px)] -translate-x-1/2"
+              />
+            }
+            solutionScene={
+              <Image
+                src="/advantage-privacy-after.svg"
+                alt="닉네임과 계열사 표현으로 정보를 가린 멘토 프로필"
+                width={391}
+                height={290}
+                unoptimized
+                className="absolute top-4 left-1/2 h-auto w-[391px] max-w-[calc(100%-40px)] -translate-x-1/2"
+              />
+            }
+          />
         </ol>
       </section>
 
@@ -380,6 +695,112 @@ export default function Home() {
         </p>
       </section>
 
+      <section className="flex flex-col items-center gap-12 bg-white px-4 py-20 sm:gap-20 sm:px-8 sm:py-[120px]">
+        <SectionHeading
+          label="교육 파트너 & 현황 소개"
+          title={["이미 많은 취업 준비생과 교육 파트너가", "렛츠커리어를 믿고 함께 했어요"]}
+          description={["다양한 부트캠프 운영 기관과 협력하여 교육생들의 취업 교육을 담당했어요"]}
+          descriptionClassName="text-[#4c4f56]"
+        />
+        <dl className="grid w-full max-w-[1000px] grid-cols-2 gap-x-4 gap-y-8 rounded-[10px] bg-[#f0f4ff] px-5 py-7 sm:grid-cols-3 lg:flex lg:justify-center lg:gap-6">
+          {STATS.map((stat) => (
+            <div key={stat.label} className="flex flex-col items-center gap-3 lg:w-40">
+              <dt className="text-sm leading-normal font-medium text-[#3e4148] sm:text-base">{stat.label}</dt>
+              <dd className="flex items-end gap-1 text-black">
+                <span className="text-[26px] leading-none font-bold sm:text-[32px]">{stat.value}</span>
+                <span className="text-xl leading-[1.1] font-semibold sm:text-2xl">{stat.unit}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {/* 파트너 로고 띠: 같은 이미지 두 장을 이어 붙여 끊김 없이 흘려보낸다 */}
+        <div className="relative -mx-4 self-stretch overflow-hidden sm:-mx-8">
+          <div aria-hidden className="absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-white to-white/0 sm:w-[360px]" />
+          <div aria-hidden className="absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-white to-white/0 sm:w-[360px]" />
+          <div className="flex w-max animate-marquee motion-reduce:animate-none">
+            {[0, 1].map((copy) => (
+              <Image
+                key={copy}
+                src="/partners.svg"
+                alt={copy === 0 ? "렛츠커리어 교육 파트너 로고" : ""}
+                aria-hidden={copy === 1}
+                width={1646}
+                height={188}
+                unoptimized
+                className="h-[120px] w-auto max-w-none pr-6 sm:h-[188px]"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-col items-center gap-12 bg-neut-0 px-4 py-20 sm:gap-20 sm:px-8 sm:py-[120px]">
+        <SectionHeading
+          dark
+          label="주요 미션"
+          title={["4가지 영역에서", "멘토 활동을 수행해요"]}
+          description={["3가지 활동을 통해 멘토링을 수행해요"]}
+        />
+        <ol className="flex w-full max-w-[1000px] flex-col gap-4 sm:gap-5">
+          {MISSIONS.map((m, i) => (
+            <li key={m.title} className="flex flex-col gap-6 overflow-hidden rounded-xl bg-[#303036] p-6 sm:p-8">
+              <div className="flex items-start gap-4 sm:gap-6">
+                {/* 번호 칸 폭을 고정해 아래 카드 목록의 시작점을 제목에 맞춘다 (program-scroller.tsx) */}
+                <span className="w-8 shrink-0 text-xl leading-[1.4] font-bold text-[#8288f8] sm:w-10 sm:text-2xl">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <p className="text-xl leading-[1.4] font-bold text-white sm:text-2xl">{m.title}</p>
+                    {"link" in m && m.link && (
+                      <a
+                        href={m.link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 rounded-full bg-brand-600 px-3 py-1 text-sm leading-normal font-semibold text-white hover:bg-brand-500"
+                      >
+                        {m.link.label}
+                        <span aria-hidden>→</span>
+                      </a>
+                    )}
+                  </div>
+                  <p className="text-[15px] leading-normal whitespace-pre-line text-[#b0b3ba] sm:text-lg">{m.description}</p>
+                </div>
+              </div>
+              {i === 0 && <ChallengeList />}
+              {i === 1 && <SeminarList />}
+              {i === 2 && <VodList />}
+              {i === 3 && <MentoringList />}
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section className="flex flex-col items-center gap-12 bg-white px-4 py-20 sm:gap-16 sm:px-8 sm:py-[120px]">
+        <SectionHeading
+          label="렛츠커리어 합류 프로세스"
+          title={["멘토 신청부터 합류까지", "3가지 단계로 진행되어요"]}
+          description={["바쁘신 일정을 고려하여 3단계 심사는", "영업일 기준 최대 5일 내 회신드릴 예정이에요."]}
+          descriptionClassName="text-[#4c4f56]"
+        />
+        {/* 윗줄 심사 3단계, 아랫줄 합류 후 2단계. 아랫줄 첫 화살표가 3→4를 잇는다 (좁은 화면은 세로 흐름) */}
+        <div className="flex w-full flex-col gap-2 rounded-[10px] bg-[#f0f4ff] p-5 sm:p-8 lg:w-auto lg:gap-6 lg:px-14 lg:py-12">
+          <ol className="flex flex-col items-center gap-2 lg:flex-row lg:justify-between lg:gap-3">
+            <ProcessStep n={1} label="3분 멘토 신청서 제출" />
+            <ProcessArrow />
+            <ProcessStep n={2} label="서류 심사" />
+            <ProcessArrow />
+            <ProcessStep n={3} label="30분 커피챗" />
+          </ol>
+          <ol className="flex flex-col items-center gap-2 lg:flex-row lg:gap-4">
+            <ProcessArrow />
+            <ProcessStep n={4} label="합류 & 렛츠커리어 멘토 온보딩" light className="lg:flex-1" />
+            <ProcessArrow />
+            <ProcessStep n={5} label="멘토 활동 & 수익 정산" light className="lg:w-[296px]" />
+          </ol>
+        </div>
+      </section>
+
       <section id="faq" className="flex flex-col items-center gap-12 bg-white px-4 pt-20 pb-24 sm:gap-20 sm:px-8 sm:pt-[120px] sm:pb-[120px]">
         <SectionHeading label="FAQ" title={["궁금한 점이 있으신가요?"]} />
         <Faq />
@@ -424,7 +845,7 @@ export default function Home() {
       {/* 플로팅 바가 페이지 끝(푸터)을 가리지 않도록 높이만큼 비워둔다 */}
       <div aria-hidden className="h-24 sm:h-28" />
       <div className="fixed inset-x-0 bottom-4 z-20 px-4 sm:bottom-6">
-        <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-3 rounded-lg bg-neut-0/64 px-4 py-3 backdrop-blur-[10px] sm:px-5 sm:py-4">
+        <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-3 rounded-lg border border-white/40 bg-neut-0/64 px-4 py-3 backdrop-blur-[10px] sm:px-5 sm:py-4">
           <p className="hidden text-xl leading-[1.4] font-semibold text-[#fafafa] md:block">
             취업 멘토링의 시작은 렛츠커리어
           </p>

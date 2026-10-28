@@ -13,6 +13,13 @@
   --color-neut-0: #27272d;
   --color-neut-40: #7a7d84;
   --color-neut-95: #f9f9f8;
+  --animate-marquee: marquee 60s linear infinite;
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 body {
