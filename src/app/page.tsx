@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import { Faq } from "@/components/faq";
+import { KAKAO_CHAT_URL } from "@/lib/links";
 
 // 아래로 갈수록 진해지는 말풍선. 마지막 흰 말풍선이 캐릭터의 대답
 const MOTIVATIONS = [
@@ -64,7 +66,7 @@ function SectionHeading({
 }: {
   label: string;
   title: string[];
-  description: string[];
+  description?: string[];
   dark?: boolean;
 }) {
   return (
@@ -74,18 +76,25 @@ function SectionHeading({
         <h2
           className={`text-[26px] leading-[1.3] font-bold sm:text-[36px] lg:text-[44px] ${dark ? "text-white" : "text-black"}`}
         >
-          {title[0]}
-          <br />
-          {title[1]}
+          <Lines lines={title} />
         </h2>
       </div>
-      <p className="text-base leading-[1.4] text-[#707fab] sm:text-xl lg:text-2xl">
-        {description[0]}
-        <br />
-        {description[1]}
-      </p>
+      {description && (
+        <p className="text-base leading-[1.4] text-[#707fab] sm:text-xl lg:text-2xl">
+          <Lines lines={description} />
+        </p>
+      )}
     </div>
   );
+}
+
+function Lines({ lines }: { lines: string[] }) {
+  return lines.map((line, i) => (
+    <span key={line}>
+      {i > 0 && <br />}
+      {line}
+    </span>
+  ));
 }
 
 export default function Home() {
@@ -131,7 +140,7 @@ export default function Home() {
                 멘토 신청하기
               </Link>
               <a
-                href="https://open.kakao.com/me/Letscareerwinter"
+                href={KAKAO_CHAT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-[136px] rounded-md bg-neut-0 px-5 py-3 text-center text-lg leading-[1.5] font-medium text-white hover:bg-zinc-700 sm:w-[150px] sm:text-xl"
@@ -234,6 +243,11 @@ export default function Home() {
         </ol>
       </section>
 
+      <section id="faq" className="flex flex-col items-center gap-12 bg-white px-4 pt-20 pb-24 sm:gap-20 sm:px-8 sm:pt-[120px] sm:pb-[120px]">
+        <SectionHeading label="FAQ" title={["궁금한 점이 있으신가요?"]} />
+        <Faq />
+      </section>
+
       <section className="relative isolate flex flex-col items-center gap-10 overflow-hidden bg-linear-135 from-[#09042a] to-[#5144b6] px-4 py-16 sm:gap-14 sm:py-24">
         {/* 시안 기준 1440px 화면에서 left 70px 위치 = 중앙에서 18px 오른쪽 */}
         <Image
@@ -269,6 +283,32 @@ export default function Home() {
           3분만에 멘토 신청하기
         </Link>
       </section>
+
+      {/* 플로팅 바가 페이지 끝(푸터)을 가리지 않도록 높이만큼 비워둔다 */}
+      <div aria-hidden className="h-24 sm:h-28" />
+      <div className="fixed inset-x-0 bottom-4 z-20 px-4 sm:bottom-6">
+        <div className="mx-auto flex max-w-[1120px] items-center justify-between gap-3 rounded-lg bg-neut-0/64 px-4 py-3 backdrop-blur-[10px] sm:px-5 sm:py-4">
+          <p className="hidden text-xl leading-[1.4] font-semibold text-[#fafafa] md:block">
+            취업 멘토링의 시작은 렛츠커리어
+          </p>
+          <div className="flex flex-1 items-center gap-3 md:flex-none">
+            <a
+              href={KAKAO_CHAT_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 rounded-md bg-white px-5 py-3 text-center text-base leading-normal font-medium text-brand-600 hover:bg-brand-50 md:flex-none"
+            >
+              문의하기
+            </a>
+            <Link
+              href="/apply"
+              className="flex-[2] rounded-md bg-brand-600 px-5 py-3 text-center text-base leading-normal font-medium whitespace-nowrap text-white hover:bg-brand-700 md:flex-none"
+            >
+              3분만에 멘토 신청하기
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
