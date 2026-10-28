@@ -13,9 +13,9 @@ export default function ApplyCompletePage() {
       </div>
       <h1 className="mt-6 text-2xl font-bold tracking-tight">신청서가 제출되었습니다</h1>
       <p className="mt-3 leading-relaxed text-zinc-600">
-        지원해주셔서 감사합니다.
+        귀한 시간 내주시어 감사합니다.
         <br />
-        신청 시 입력한 <strong>성함</strong>과 <strong>연락처</strong>로 진행 현황을 확인할 수 있습니다.
+        5영업일 내로 선택해주신 연락 수단을 통해 회신드리겠습니다.
       </p>
       <div className="mt-8 flex gap-3">
         <Link href="/status" className="rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700">
