@@ -14,6 +14,21 @@ const inputClass =
 
 type Result = { status: ApplicationStatus; statusLabel: string; createdAt: string };
 
+const REPLY_BUSINESS_DAYS = 5;
+
+// 신청일(KST)로부터 주말을 제외한 영업일을 더한 날짜. 공휴일은 반영하지 않음.
+function expectedReplyDate(createdAt: string) {
+  const kst = new Date(new Date(createdAt).getTime() + 9 * 60 * 60 * 1000);
+  const date = new Date(Date.UTC(kst.getUTCFullYear(), kst.getUTCMonth(), kst.getUTCDate()));
+  let added = 0;
+  while (added < REPLY_BUSINESS_DAYS) {
+    date.setUTCDate(date.getUTCDate() + 1);
+    const day = date.getUTCDay();
+    if (day !== 0 && day !== 6) added++;
+  }
+  return date.toLocaleDateString("ko-KR", { timeZone: "UTC", month: "long", day: "numeric", weekday: "short" });
+}
+
 export function StatusLookup() {
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -110,6 +125,13 @@ export function StatusLookup() {
               );
             })}
           </ol>
+          {result.status !== "replied" && (
+            <p className="mt-6 border-t border-zinc-100 pt-4 text-center text-sm text-zinc-500">
+              {REPLY_BUSINESS_DAYS} 영업일 이내 회신드리겠습니다.
+              <br />
+              예상 회신일: <span className="font-semibold text-zinc-700">{expectedReplyDate(result.createdAt)}</span>
+            </p>
+          )}
         </div>
       )}
     </div>
