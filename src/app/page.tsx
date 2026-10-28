@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { Faq } from "@/components/faq";
 import { KAKAO_CHAT_URL } from "@/lib/links";
 
@@ -29,6 +30,24 @@ const MOTIVATIONS = [
     lines: ["멘토 활동을 통해 직무에 대한 나의 지식과 경험을", "후배들에게 나누고 함께 성장하고 싶어요!"],
     row: "items-center",
     bubble: "bg-white text-black sm:py-8",
+  },
+];
+
+const VALUES = [
+  {
+    name: "Reliable",
+    summary: "믿고 커리어 고민을 함께해요",
+    lines: ["앞으로의 커리어 방향을", "고민하고 결정하는데 있어", "신뢰할 수 있는 정보와 경험"],
+  },
+  {
+    name: "Motivating",
+    summary: "해내고 싶다는 마음이 들게 해요",
+    lines: ["챌린지를 기반으로 한 미션을 통해", "취업 준비생이 포기하지 않고", "목표를 달성할 수 있도록 동기부여"],
+  },
+  {
+    name: "Supportive",
+    summary: "불안감과 위화감을 조성하지 않아요",
+    lines: ["심리적 압박과 스트레스를 지양하며", "오로지 목표에만 집중할 수 있도록", "취업 준비생을 격려하고 기여"],
   },
 ];
 
@@ -63,16 +82,20 @@ function SectionHeading({
   title,
   description,
   dark = false,
+  labelClassName = "text-[#4a76ff]",
+  descriptionClassName = "text-[#707fab]",
 }: {
   label: string;
-  title: string[];
+  labelClassName?: string;
+  title: ReactNode[];
   description?: string[];
   dark?: boolean;
+  descriptionClassName?: string;
 }) {
   return (
     <div className="flex w-full max-w-[1000px] flex-col gap-5 text-center sm:gap-[30px]">
       <div className="flex flex-col gap-3">
-        <p className="text-lg leading-[1.17] font-bold text-[#4a76ff] sm:text-2xl">{label}</p>
+        <p className={`text-lg leading-[1.17] font-bold sm:text-2xl ${labelClassName}`}>{label}</p>
         <h2
           className={`text-[26px] leading-[1.3] font-bold sm:text-[36px] lg:text-[44px] ${dark ? "text-white" : "text-black"}`}
         >
@@ -80,7 +103,7 @@ function SectionHeading({
         </h2>
       </div>
       {description && (
-        <p className="text-base leading-[1.4] text-[#707fab] sm:text-xl lg:text-2xl">
+        <p className={`text-base leading-[1.4] sm:text-xl lg:text-2xl ${descriptionClassName}`}>
           <Lines lines={description} />
         </p>
       )}
@@ -88,9 +111,27 @@ function SectionHeading({
   );
 }
 
-function Lines({ lines }: { lines: string[] }) {
+// 시안의 과녁 아이콘을 단순화한 버전: 겹친 동심원 + 오른쪽 위 빛
+function ValueIcon({ tilt = false }: { tilt?: boolean }) {
+  return (
+    <svg aria-hidden viewBox="0 0 64 64" className={`size-16 ${tilt ? "-rotate-15" : ""}`}>
+      <defs>
+        <linearGradient id="value-icon-shine" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#4d55f5" stopOpacity="0.4" />
+          <stop offset="1" stopColor="#fff" />
+        </linearGradient>
+      </defs>
+      <circle cx="32" cy="32" r="31.5" fill="#4d55f5" fillOpacity="0.44" />
+      <circle cx="32" cy="32" r="24.5" fill="#4d55f5" fillOpacity="0.44" />
+      <circle cx="32" cy="32" r="17.5" fill="#4d55f5" fillOpacity="0.44" />
+      <path d="M32 0.5A31.5 31.5 0 0 1 63.5 32H32Z" fill="url(#value-icon-shine)" />
+    </svg>
+  );
+}
+
+function Lines({ lines }: { lines: ReactNode[] }) {
   return lines.map((line, i) => (
-    <span key={line}>
+    <span key={i}>
       {i > 0 && <br />}
       {line}
     </span>
@@ -241,6 +282,102 @@ export default function Home() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="flex flex-col items-center gap-14 bg-[#f0f4ff] px-4 pt-20 pb-28 sm:gap-20 sm:px-8 sm:pt-[120px] sm:pb-[160px]">
+        <div className="flex w-full flex-col items-center gap-12 sm:gap-14">
+          <SectionHeading
+            label="렛츠커리어 소개"
+            title={[
+              "커리어의 첫 걸음",
+              <>
+                <span className="text-[#6b63ff]">렛츠커리어</span>는 막막함에 주목했어요
+              </>,
+            ]}
+            description={["대한민국의 많은 청년들은 취업 준비를 앞두고 여러 어려움을 느끼고 있어요."]}
+            descriptionClassName="text-[#4c4f56]"
+          />
+          {/* 데스크톱은 시안 좌표대로 겹쳐 놓고, 좁은 화면에서는 세로로 쌓는다 */}
+          <div className="relative flex w-full max-w-[1000px] flex-col items-center gap-5 lg:block lg:h-[233px]">
+            <p className="order-2 rounded-xl bg-white px-6 py-5 text-center text-[17px] leading-[1.5] font-bold text-neut-0 shadow-[0_2px_8px_rgba(166,170,255,0.5)] sm:text-xl lg:absolute lg:top-[133px] lg:left-[349px] lg:px-10 lg:py-8 lg:text-2xl lg:whitespace-nowrap">
+              경쟁의 굴레 속에서 점점 떨어져가는 자신감
+            </p>
+            <p className="order-1 -rotate-3 rounded-xl bg-white p-5 text-center text-[17px] leading-[1.5] font-bold text-neut-0 shadow-[0_2px_8px_rgba(77,85,245,0.5)] sm:text-xl lg:absolute lg:top-[80px] lg:left-[171px] lg:origin-top-left lg:-rotate-7 lg:p-8 lg:text-2xl lg:whitespace-nowrap">
+              나의 상황과는 무관하게 쏟아지는 각종 취업 정보
+            </p>
+          </div>
+        </div>
+        <div aria-hidden className="flex flex-col gap-[18px]">
+          <span className="size-2 rounded-full bg-[#caccfc]" />
+          <span className="size-2 rounded-full bg-[#8288f8]" />
+          <span className="size-2 rounded-full bg-brand-600" />
+        </div>
+        <p className="max-w-[866px] text-center text-2xl leading-[1.5] font-semibold text-[#5c5f66] sm:text-[36px] lg:text-[44px]">
+          국내 유일의 서류 작성 교육으로
+          <br />
+          커리어의 첫 시작을 함께하고자 해요
+        </p>
+      </section>
+
+      <section className="relative isolate flex flex-col items-center overflow-hidden bg-[#f0f4ff] px-4 pt-20 pb-28 sm:px-8 sm:pt-[120px] sm:pb-[160px]">
+        {/* 섹션 위쪽을 감싸는 큰 반원 빛과 카드 아래쪽 은은한 빛 */}
+        {/* 타원이 이미지 가로 중앙에 있어 화면 가로 중앙에 맞춘다 */}
+        <Image
+          src="/mission-background.png"
+          alt=""
+          width={1993}
+          height={1302}
+          unoptimized
+          className="absolute top-[45px] left-1/2 -z-10 h-[1302px] w-[1993px] max-w-none -translate-x-1/2"
+        />
+        <div
+          aria-hidden
+          className="absolute top-[892px] left-1/2 -z-10 h-[423px] w-[1046px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(199,178,255,0.25),rgba(240,244,255,0.25))]"
+        />
+
+        <SectionHeading
+          label="Mission"
+          labelClassName="text-[#969aff]"
+          title={[
+            "취업 준비생과 함께하는",
+            "지속가능한 커리어",
+            <>
+              <span className="text-[#6b63ff]">‘선순환 커뮤니티’</span>를 만듭니다
+            </>,
+          ]}
+        />
+
+        <div className="mt-14 flex w-full max-w-[1000px] flex-col gap-6 sm:mt-[100px] sm:gap-10">
+          <p className="flex flex-col items-center justify-center gap-1 rounded-[10px] bg-white px-5 py-5 text-center shadow-[0_1px_10px_rgba(77,85,245,0.25)] sm:flex-row sm:gap-6 sm:py-7">
+            <span className="text-xl leading-[1.4] font-bold text-brand-600 sm:text-[26px]">Vision</span>
+            <span className="text-base leading-[1.4] font-medium text-[#3e4148] sm:text-2xl">
+              모두의 ‘커리어 시작’ 경험의 퀄리티를 높입니다
+            </span>
+          </p>
+          <ul className="grid gap-4 lg:grid-cols-3 lg:gap-[26px]">
+            {VALUES.map((v, i) => (
+              <li
+                key={v.name}
+                className="flex flex-col items-center justify-end gap-5 rounded-xl bg-white px-5 pt-6 pb-8 text-center shadow-[0_0_10px_rgba(77,85,245,0.25)] lg:h-[330px] lg:pb-10"
+              >
+                <ValueIcon tilt={i === 1} />
+                <div className="flex flex-col gap-1">
+                  <p className="text-xl leading-[1.4] font-bold text-neut-0 sm:text-2xl">{v.name}</p>
+                  <p className="text-base leading-[1.4] font-semibold text-neut-0 sm:text-lg">{v.summary}</p>
+                </div>
+                <p className="text-[15px] leading-[1.5] font-medium text-neut-40 sm:text-lg">
+                  <Lines lines={v.lines} />
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p className="mt-24 text-center text-2xl leading-[1.4] font-bold tracking-[0.02em] text-neut-0 sm:mt-[180px] sm:text-[36px] lg:text-[44px]">
+          모두가 자신만의 커리어를 설계하고
+          <br />
+          지속할 수 있도록 <span className="text-brand-600">그 과정에 함께 해주세요</span>
+        </p>
       </section>
 
       <section id="faq" className="flex flex-col items-center gap-12 bg-white px-4 pt-20 pb-24 sm:gap-20 sm:px-8 sm:pt-[120px] sm:pb-[120px]">
