@@ -1,15 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 
-// 랜딩 콘텐츠는 확정 전이라 섹션 자리만 잡아둔다.
-const SECTIONS = [
-  { id: "about", label: "멘토링 소개" },
-  { id: "role", label: "멘토 역할" },
-  { id: "benefits", label: "멘토 혜택" },
-  { id: "process", label: "선발 절차" },
-  { id: "faq", label: "자주 묻는 질문" },
-];
-
 // 아래로 갈수록 진해지는 말풍선. 마지막 흰 말풍선이 캐릭터의 대답
 const MOTIVATIONS = [
   {
@@ -219,7 +210,7 @@ export default function Home() {
                   고민 {i + 1}
                 </span>
               </div>
-              <ul className="flex flex-col gap-4 sm:px-[120px]">
+              <ul className="flex flex-col gap-4 sm:pl-[120px]">
                 {c.details.map((d) => (
                   <li key={d} className="flex items-center gap-3">
                     <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[#404052] sm:size-8">
@@ -243,24 +234,39 @@ export default function Home() {
         </ol>
       </section>
 
-      {SECTIONS.map((s) => (
-        <section key={s.id} id={s.id} className="border-b border-zinc-100">
-          <div className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-            <h2 className="text-2xl font-bold tracking-tight">{s.label}</h2>
-            <div className="mt-6 rounded-xl border border-dashed border-zinc-200 p-10 text-center text-sm text-zinc-400">
-              콘텐츠 준비 중
-            </div>
-          </div>
-        </section>
-      ))}
-
-      <section className="mx-auto w-full max-w-5xl px-4 py-20 text-center sm:px-6">
-        <h2 className="text-2xl font-bold tracking-tight">지금 멘토로 지원하세요</h2>
+      <section className="relative isolate flex flex-col items-center gap-10 overflow-hidden bg-linear-135 from-[#09042a] to-[#5144b6] px-4 py-16 sm:gap-14 sm:py-24">
+        {/* 시안 기준 1440px 화면에서 left 70px 위치 = 중앙에서 18px 오른쪽 */}
+        <Image
+          src="/cta-background.svg"
+          alt=""
+          width={1336}
+          height={1336}
+          unoptimized
+          className="absolute top-[-253px] left-[calc(50%-650px)] -z-10 size-[1336px] max-w-none"
+        />
+        <Image
+          src="/logo-hero-white.svg"
+          alt="렛츠커리어"
+          width={220}
+          height={35}
+          unoptimized
+          className="h-auto w-[180px] sm:w-[220px]"
+        />
+        <h2 className="max-w-[866px] text-center text-[28px] leading-[1.4] font-bold sm:text-[40px] lg:text-[52px]">
+          <span className="box-decoration-clone bg-linear-to-b from-[#c4a3ff] to-[#5b54ff] to-70% bg-clip-text text-transparent">
+            빠르게 경험하고 수익화까지
+          </span>
+          <br />
+          <span className="text-[#edeefe]">
+            렛츠커리어 멘토링으로 <br className="sm:hidden" />
+            시도해보세요
+          </span>
+        </h2>
         <Link
           href="/apply"
-          className="mt-6 inline-block rounded-lg bg-brand-600 px-8 py-3 font-semibold text-white hover:bg-brand-700"
+          className="flex h-12 items-center justify-center gap-2 rounded-lg bg-[linear-gradient(272deg,#9762f5_1.88%,#544cff_98.12%)] px-7 py-4 text-xl leading-none font-semibold text-white hover:brightness-110 sm:h-16 sm:px-10 sm:py-6 sm:text-2xl"
         >
-          멘토 신청하기
+          3분만에 멘토 신청하기
         </Link>
       </section>
     </>
