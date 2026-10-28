@@ -98,9 +98,15 @@ export function StatusLookup() {
           <p className="text-sm text-zinc-500">
             신청일 {new Date(result.createdAt).toLocaleDateString("ko-KR", { timeZone: "Asia/Seoul" })}
           </p>
-          <p className="mt-1 text-xl font-bold">
-            현재 상태: <span className="text-brand-600">{result.statusLabel}</span>
-          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <p className="text-xl font-bold text-brand-600">{result.statusLabel}</p>
+            {result.status !== "replied" && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-50 px-3 py-1 text-xs text-brand-700">
+                예상 회신일
+                <span className="font-semibold">{expectedReplyDate(result.createdAt)}</span>
+              </span>
+            )}
+          </div>
           <ol className="mt-6 flex items-center">
             {STEPS.map((step, i) => {
               const done = i <= currentIndex;
@@ -125,13 +131,6 @@ export function StatusLookup() {
               );
             })}
           </ol>
-          {result.status !== "replied" && (
-            <p className="mt-6 border-t border-zinc-100 pt-4 text-center text-sm text-zinc-500">
-              {REPLY_BUSINESS_DAYS} 영업일 이내 회신드리겠습니다.
-              <br />
-              예상 회신일: <span className="font-semibold text-zinc-700">{expectedReplyDate(result.createdAt)}</span>
-            </p>
-          )}
         </div>
       )}
     </div>
