@@ -7,6 +7,12 @@
   --color-brand-500: #6f76f7;
   --color-brand-600: #4d55f5;
   --color-brand-700: #3a41d6;
+  /* 디자인 시안 토큰 (Primary-90, Neutral 0/40/95) */
+  --color-primary-90: #5f66f6;
+  --color-accent-purple: #9762f5;
+  --color-neut-0: #27272d;
+  --color-neut-40: #7a7d84;
+  --color-neut-95: #f9f9f8;
 }
 
 body {
