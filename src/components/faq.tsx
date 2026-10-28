@@ -5,21 +5,82 @@ import { KAKAO_CHAT_URL } from "@/lib/links";
 
 type FaqItem = { question: string; answer: string };
 
-// 임시 내용 — 탭별 질문 확정 시 교체
+// 초안 — 정산·활동 조건 등 운영 정책이 확정되면 문구 검토 필요
 const FAQ_TABS: { label: string; items: FaqItem[] }[] = [
   {
     label: "참여 전",
     items: [
       {
-        question: "온라인 참여는 어떻게 하나요?",
+        question: "어떤 분들이 멘토로 지원할 수 있나요?",
         answer:
-          "신청을 완료하신 후에, 카카오톡 알림톡을 통해 zoom 링크를 전송드릴 예정입니다. 혹시나 링크를 받아보지 못하셨다면, 채팅문의를 통해 문의주세요.",
+          "현재 기업에서 근무 중인 현직자라면 누구나 지원하실 수 있어요. 대단한 경력이 아니어도 괜찮아요. 직접 겪은 취업 준비 과정과 실무 경험이 후배들에게는 가장 현실적인 도움이 됩니다.",
+      },
+      {
+        question: "어떤 멘토링을 할 수 있나요?",
+        answer:
+          "서류 첨삭, 모의 면접, 커리어 상담, 직무 Q&A 중 자신 있는 형태를 골라 진행하실 수 있어요. 무엇을 나눠야 할지 막막하시다면 합류 후 렛츠커리어 매니저가 멘토님의 경험에 맞는 주제와 진행 방식을 함께 정리해드려요.",
+      },
+      {
+        question: "신청 후 합류까지 어떻게 진행되나요?",
+        answer:
+          "신청서를 제출하시면 5영업일 내로 선택하신 연락 수단(전화 또는 이메일)으로 회신드려요. 진행 상황은 '신청 현황 조회'에서 이름과 전화번호로 언제든 확인하실 수 있어요.",
+      },
+      {
+        question: "신청서를 제출한 뒤 내용을 수정할 수 있나요?",
+        answer:
+          "제출된 신청서는 직접 수정할 수 없어요. 변경이 필요하시면 1:1 채팅 문의로 말씀해주세요. 같은 전화번호로는 중복 신청이 되지 않으니 참고해주세요.",
       },
     ],
   },
-  { label: "참여 중", items: [] },
-  { label: "참여 후", items: [] },
-  { label: "기타", items: [] },
+  {
+    label: "참여 중",
+    items: [
+      {
+        question: "멘토링은 온라인으로 진행되나요?",
+        answer:
+          "네, 멘토링은 온라인으로 진행돼요. 오프라인 참석 부담 없이 집이나 원하는 장소에서 참여하실 수 있어요.",
+      },
+      {
+        question: "회사 업무가 바빠도 활동할 수 있나요?",
+        answer:
+          "멘토링 일정은 멘토님이 가능한 시간을 기준으로 잡아요. 퇴근 후나 주말처럼 원하는 시간대에 활동하실 수 있고, 업무 일정이 바뀌면 매니저와 조율하실 수 있어요.",
+      },
+      {
+        question: "멘토링 일지나 보고 같은 행정 업무도 해야 하나요?",
+        answer:
+          "멘티 모집, 일정 안내, 기업 보고용 자료 정리 같은 운영 업무는 렛츠커리어가 맡아요. 멘토님은 멘토링 자체에만 집중하실 수 있도록 필요한 절차를 최소화하고 있어요.",
+      },
+    ],
+  },
+  {
+    label: "참여 후",
+    items: [
+      {
+        question: "멘토링 활동비는 어떻게 지급되나요?",
+        answer:
+          "진행하신 멘토링에 따라 활동비가 정산돼요. 금액과 정산 일정 등 자세한 조건은 합류 안내 과정에서 개별적으로 안내드려요.",
+      },
+      {
+        question: "한 번 참여한 뒤에도 계속 활동할 수 있나요?",
+        answer:
+          "물론이에요. 원하시는 만큼 꾸준히 활동하실 수 있고, 잠시 쉬었다가 다시 참여하셔도 괜찮아요. 활동이 쌓일수록 멘토님만의 커리어 브랜드를 만드는 데에도 도움이 돼요.",
+      },
+    ],
+  },
+  {
+    label: "기타",
+    items: [
+      {
+        question: "이름이나 얼굴 같은 개인정보가 공개되나요?",
+        answer:
+          "멘토님이 동의하지 않은 개인정보는 공개되지 않아요. 실명이나 얼굴 공개가 부담스러우시다면 신청 후 회신 과정에서 말씀해주세요. 공개 범위를 함께 정할 수 있어요.",
+      },
+      {
+        question: "궁금한 점은 어디로 문의하면 되나요?",
+        answer: "아래 '1:1 채팅 문의하기'를 눌러 카카오톡 오픈채팅으로 편하게 문의해주세요.",
+      },
+    ],
+  },
 ];
 
 export function Faq() {
@@ -52,9 +113,9 @@ export function Faq() {
           {items.length === 0 && (
             <p className="py-10 text-center text-base text-[#989ba2]">등록된 질문이 없어요.</p>
           )}
-          {items.map((item) => (
-            // 탭을 바꾸면 펼침 상태도 처음(열림)으로 돌아간다
-            <details key={`${active}-${item.question}`} open className="group">
+          {items.map((item, i) => (
+            // 탭마다 첫 질문만 펼쳐 둔다. 탭을 바꾸면 펼침 상태도 처음으로 돌아간다
+            <details key={`${active}-${item.question}`} open={i === 0} className="group">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-sm border border-[#e7e7e7] bg-[#fafafa] px-4 py-3.5 group-open:rounded-b-none sm:px-5 sm:py-4 [&::-webkit-details-marker]:hidden">
                 <span className="text-[17px] leading-[1.4] font-semibold text-neut-0 sm:text-[22px]">
                   {item.question}
