@@ -98,6 +98,40 @@ const MISSIONS = [
   },
 ];
 
+// 멘토 활동 현황. 카드 이미지(public/mentors-row-*.jpg)에 그려진 순서 그대로, 15명씩 두 줄
+const MENTORS = [
+  { name: "쥬디", role: "렛츠커리어 CEO" },
+  { name: "팀탐", role: "렛츠커리어 COO" },
+  { name: "레오", role: "렛츠커리어 CPO" },
+  { name: "소피아", role: "LG에너지솔루션/전략기획" },
+  { name: "크리스", role: "신한투자증권/금융업,IB" },
+  { name: "브라이언", role: "HD현대일렉트릭/해외영업" },
+  { name: "우디", role: "기아차/브랜드 마케팅" },
+  { name: "헤일리", role: "현대자동차/글로벌 커뮤니케이션" },
+  { name: "줄리아", role: "현대자동차/상품전략" },
+  { name: "이프쌤", role: "SK이노베이션/마케팅" },
+  { name: "휴고", role: "현대자동차/상품기획" },
+  { name: "하이디", role: "토스/세일즈" },
+  { name: "이린", role: "캐시노트/마케팅" },
+  { name: "벤자민", role: "BCG/컨설턴트" },
+  { name: "유나", role: "현대코퍼레이션/PM" },
+  { name: "미니", role: "한국타이어/HR" },
+  { name: "세라", role: "한화오션/해외영업" },
+  { name: "쥬쌤", role: "SK하이닉스/영업마케팅" },
+  { name: "루크", role: "삼일PwC/ESG 컨설턴트" },
+  { name: "후추쌤", role: "대학내일/AE" },
+  { name: "영", role: "뤼튼테크놀로지스/AI개발" },
+  { name: "파도", role: "뤼튼테크놀로지스/서비스 기획" },
+  { name: "Seren", role: "현대로템/AI데이터사이언티스트" },
+  { name: "도니", role: "무신사/백엔드 개발자" },
+  { name: "제이", role: "무신사/백엔드 개발자" },
+  { name: "찰스", role: "삼성전자/반도체 엔지니어링" },
+  { name: "머스캣", role: "삼성바이오로직스/공정엔지니어링" },
+  { name: "길라잡이", role: "LG디스플레이/AI개발" },
+  { name: "루카", role: "DB Inc/SW 엔지니어" },
+  { name: "준", role: "현대자동차/IT 서비스 기획" },
+];
+
 const CONCERNS = [
   {
     title: "현직자 멘토 활동, 관심은 있는데 내가 무얼 할 수 있는지 잘 모르겠어요",
@@ -292,37 +326,25 @@ function CheckIcon({ className = "" }: { className?: string }) {
 // 좁은 화면에서는 아래를 향한다
 function ProcessArrow() {
   return (
-    <li aria-hidden className="flex shrink-0 rotate-90 lg:rotate-0">
-      <Image src="/process-arrow.svg" alt="" width={27} height={40} unoptimized className="h-8 w-auto lg:h-10" />
+    <li aria-hidden className="flex shrink-0 rotate-90 items-center lg:rotate-0">
+      <Image src="/process-arrow.svg" alt="" width={27} height={40} unoptimized className="h-6 w-auto lg:h-8" />
     </li>
   );
 }
 
-function ProcessStep({
-  n,
-  label,
-  light = false,
-  className = "",
-}: {
-  n: number;
-  label: string;
-  light?: boolean;
-  className?: string;
-}) {
+// 흰 카드 + STEP 뱃지. '어려움' 섹션 고민 뱃지, Mission 가치 카드와 같은 카드·그림자 결
+function ProcessStep({ n, label, light = false }: { n: number; label: string; light?: boolean }) {
   return (
-    <li
-      className={`flex w-full items-center gap-3 rounded-lg py-3.5 pr-6 pl-5 sm:py-4 sm:pl-6 lg:w-auto ${
-        light ? "bg-[#dbddfd] text-[#5c5f66] lg:pr-9" : "bg-[#7177f7] text-white lg:pr-8"
-      } ${className}`}
-    >
+    <li className="flex w-full flex-col items-center gap-3 rounded-xl bg-white px-4 py-6 text-center shadow-[0_0_10px_rgba(77,85,245,0.15)] lg:flex-1 lg:justify-center">
       <span
-        className={`flex size-6 shrink-0 items-center justify-center rounded-full text-base leading-[1.25] font-semibold ${
-          light ? "bg-brand-600/30 text-brand-600" : "bg-white/28"
+        className={`rounded-xl px-3 py-0.5 text-sm leading-normal font-bold ${
+          light ? "bg-brand-600/12 text-brand-600" : "bg-brand-600 text-white"
         }`}
       >
-        {n}
+        STEP {n}
       </span>
-      <span className="text-[17px] leading-[1.5] font-semibold sm:text-xl lg:text-[22px] lg:whitespace-nowrap">
+      {/* 이름 칸을 두 줄 높이로 고정해 STEP 뱃지가 모든 카드에서 같은 높이에 오게 한다 */}
+      <span className="flex items-center text-[17px] leading-[1.4] font-bold break-keep text-neut-0 sm:text-lg lg:h-[3.15rem]">
         {label}
       </span>
     </li>
@@ -783,21 +805,52 @@ export default function Home() {
           description={["바쁘신 일정을 고려하여 3단계 심사는", "영업일 기준 최대 5일 내 회신드릴 예정이에요."]}
           descriptionClassName="text-[#4c4f56]"
         />
-        {/* 윗줄 심사 3단계, 아랫줄 합류 후 2단계. 아랫줄 첫 화살표가 3→4를 잇는다 (좁은 화면은 세로 흐름) */}
-        <div className="flex w-full flex-col gap-2 rounded-[10px] bg-[#f0f4ff] p-5 sm:p-8 lg:w-auto lg:gap-6 lg:px-14 lg:py-12">
-          <ol className="flex flex-col items-center gap-2 lg:flex-row lg:justify-between lg:gap-3">
-            <ProcessStep n={1} label="3분 멘토 신청서 제출" />
-            <ProcessArrow />
-            <ProcessStep n={2} label="서류 심사" />
-            <ProcessArrow />
-            <ProcessStep n={3} label="30분 커피챗" />
-          </ol>
-          <ol className="flex flex-col items-center gap-2 lg:flex-row lg:gap-4">
-            <ProcessArrow />
-            <ProcessStep n={4} label="합류 & 렛츠커리어 멘토 온보딩" light className="lg:flex-1" />
-            <ProcessArrow />
-            <ProcessStep n={5} label="멘토 활동 & 수익 정산" light className="lg:w-[296px]" />
-          </ol>
+        {/* 다섯 단계를 한 줄로. 1~3 심사는 진한 번호, 4~5 합류 후는 연한 번호 (좁은 화면은 세로 흐름) */}
+        <ol className="flex w-full max-w-[1000px] flex-col items-center gap-2 rounded-[10px] bg-[#f0f4ff] p-5 sm:p-8 lg:flex-row lg:items-stretch lg:gap-3 lg:px-10 lg:py-12">
+          <ProcessStep n={1} label="3분만에 멘토 신청하기" />
+          <ProcessArrow />
+          <ProcessStep n={2} label="서류 심사" />
+          <ProcessArrow />
+          <ProcessStep n={3} label="30분 커피챗" />
+          <ProcessArrow />
+          <ProcessStep n={4} label="합류 & 멘토 온보딩" light />
+          <ProcessArrow />
+          <ProcessStep n={5} label="멘토 활동 & 수익 정산" light />
+        </ol>
+      </section>
+
+      <section className="flex flex-col items-center gap-12 overflow-hidden bg-[#f0f4ff] px-4 py-20 sm:gap-20 sm:px-8 sm:py-[120px]">
+        <SectionHeading
+          label="멘토 활동 현황"
+          title={["이미 많은 현직자 멘토님들이", "함께 렛츠커리어를 빛내주고 계세요"]}
+          description={["모두가 자신만의 커리어를 설계하고 지속할 수 있도록 그 과정에 함께 해주세요"]}
+          descriptionClassName="text-[#4c4f56]"
+        />
+        {/* 두 줄이 서로 반대 방향으로 흐른다. 같은 목록을 두 번 이어 붙여 끊김 없이 반복 */}
+        <div className="relative -mx-4 flex flex-col gap-4 self-stretch sm:-mx-8 sm:gap-6">
+          <div aria-hidden className="absolute inset-y-0 left-0 z-10 w-10 bg-linear-to-r from-[#f0f4ff] to-[#f0f4ff]/0 sm:w-40" />
+          <div aria-hidden className="absolute inset-y-0 right-0 z-10 w-10 bg-linear-to-l from-[#f0f4ff] to-[#f0f4ff]/0 sm:w-40" />
+          {[MENTORS.slice(0, 15), MENTORS.slice(15)].map((row, r) => (
+            <div key={r} className="overflow-hidden">
+              <div
+                className={`flex w-max motion-reduce:animate-none ${r === 0 ? "animate-marquee" : "animate-marquee-reverse"}`}
+              >
+                {[0, 1].map((copy) => (
+                  // 멘토 카드 15장을 한 장으로 합친 이미지 (원본 4368×260, 2배 해상도)
+                  <Image
+                    key={copy}
+                    src={`/mentors-row-${r + 1}.jpg`}
+                    alt={copy === 0 ? row.map((m) => `${m.name} 멘토(${m.role})`).join(", ") : ""}
+                    aria-hidden={copy === 1}
+                    width={4368}
+                    height={260}
+                    unoptimized
+                    className="h-[180px] w-auto max-w-none pr-3 sm:h-[260px]"
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
